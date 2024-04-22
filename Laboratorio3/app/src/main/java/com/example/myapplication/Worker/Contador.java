@@ -21,6 +21,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import androidx.work.Data;
 
 public class Contador extends Worker {
 
@@ -37,24 +38,18 @@ public class Contador extends Worker {
     @Override
     public Result doWork() {
 
-        // Consulta
-        primoService = new Retrofit.Builder()
-                .baseUrl("https://prime-number-api.onrender.com")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create(PrimoService.class);
         // Lista
         primoService.getListaPrimos().enqueue(new Callback<List<Primo>>() {
 
             @Override
             public void onResponse(Call<List<Primo>> call, Response<List<Primo>> response) {
-                Log.d("msg-test-ws-profile","entro en la respuesta " );
                 if(response.isSuccessful()){
                     List<Primo> listaPrimos = response.body();
                     int suma = 0;
                     for (Primo primo : listaPrimos) {
+                        Log.d("msg-test-suma worker", "Suma actual Worker: " + suma);
+                        setProgressAsync(new Data.Builder().putInt("suma",suma).build());
                         suma += primo.getNumber();
-                        Log.d("msg-test-suma", "Suma actual: " + suma);
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
@@ -66,7 +61,7 @@ public class Contador extends Worker {
             @Override
             public void onFailure(Call<List<Primo>> call, Throwable t) {
                 t.printStackTrace();
-                Log.d("msg-test-ws-profile","hay un error " );
+                Log.d("msg","hay un error " );
             }
         });
 

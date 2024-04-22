@@ -27,7 +27,9 @@ import com.example.myapplication.dto.Primo;
 import com.example.myapplication.service.PeliculaService;
 import com.example.myapplication.service.PrimoService;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 
 import retrofit2.Call;
@@ -35,6 +37,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
 
 public class ContadorActivity extends AppCompatActivity {
 
@@ -51,6 +54,7 @@ public class ContadorActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.contador);
         showToastWithDelay("Contador de primos", 3000);
+
 
         // Boton regresar
         regresar = findViewById(R.id.regresar);
@@ -109,8 +113,29 @@ public class ContadorActivity extends AppCompatActivity {
 
         //Contador
 
-        // iniciarContador(); i
+        /*
+        UUID uuid = UUID.randomUUID();
+        WorkRequest workRequest = new OneTimeWorkRequest.Builder(Contador.class).build();
+
+        WorkManager
+                .getInstance(ContadorActivity.this.getApplicationContext())
+                .enqueue(workRequest);
+
+        WorkManager.getInstance(getApplicationContext()).getWorkInfoByIdLiveData(workRequest.getId())
+                .observe(ContadorActivity.this, workInfo -> {
+                    if (workInfo != null ) {
+                        Data progress = workInfo.getProgress();
+                        int suma = progress.getInt("suma", 0);
+                        primoNumero.setText(String.valueOf(suma));
+                        Log.d("msg-test Request", "Suma actual Contador: " + suma);
+                    } else  {
+
+                    }
+                });*/
+
+
     }
+
 
     public void fetchProfileFromWs(int id){
         Log.d("msg-test-ws-profile","entra al metodo " );
@@ -157,25 +182,5 @@ public class ContadorActivity extends AppCompatActivity {
         }, duration);
     }
 
-    private void iniciarContador() {
-        WorkRequest workRequest = new OneTimeWorkRequest.Builder(Contador.class).build();
-
-        WorkManager
-                .getInstance(ContadorActivity.this.getApplicationContext())
-                .enqueue(workRequest);
-
-        WorkManager.getInstance(getApplicationContext()).getWorkInfoByIdLiveData(workRequest.getId())
-                .observe(this, workInfo -> {
-                    if (workInfo != null ) {
-                        Data progress = workInfo.getProgress();
-                        int contador = progress.getInt("contador", 0);
-                        Log.d("msg-test", "progress: " + contador);
-                    } else  {
-
-                    }
-                });
-
-
-    }
 
 }
